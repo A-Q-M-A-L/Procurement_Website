@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Frontier Projects social preview">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#142433" />
+      <stop offset="100%" stop-color="#1f3b5d" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" rx="36" />
+  <circle cx="1030" cy="110" r="180" fill="rgba(251,191,36,0.08)" />
+  <circle cx="180" cy="520" r="220" fill="rgba(255,255,255,0.04)" />
+
+  <g transform="translate(92 110)">
+    <rect x="0" y="86" width="48" height="104" rx="12" fill="url(#accent)" />
+    <rect x="68" y="30" width="48" height="160" rx="12" fill="url(#accent)" />
+    <rect x="136" y="0" width="48" height="190" rx="12" fill="url(#accent)" />
+  </g>
+
+  <text x="320" y="190" fill="#fbbf24" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="4">
+    FRONTIER PROJECTS
+  </text>
+  <text x="320" y="290" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">
+    Construction and procurement
+  </text>
+  <text x="320" y="368" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">
+    support that keeps
+  </text>
+  <text x="320" y="446" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">
+    projects moving.
+  </text>
+  <text x="320" y="525" fill="#d1d5db" font-family="Inter, Arial, sans-serif" font-size="28">
+    Residential, commercial, industrial and modular site solutions
+  </text>
+</svg>
