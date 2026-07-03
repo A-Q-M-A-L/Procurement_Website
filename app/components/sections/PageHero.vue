@@ -11,7 +11,7 @@ defineProps<{
     <div class="shell">
       <div class="page-hero__panel">
         <p v-if="eyebrow" class="eyebrow">{{ eyebrow }}</p>
-        <h1>{{ title }}</h1>
+        <h1 id="page-hero-title">{{ title }}</h1>
         <p class="lead">{{ description }}</p>
       </div>
     </div>
