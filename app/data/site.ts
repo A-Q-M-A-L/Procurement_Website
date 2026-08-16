@@ -13,9 +13,9 @@ export const legalLinks = [
 ]
 
 export const socialLinks = [
-  { label: 'Facebook', href: 'https://www.facebook.com/frontierprojects', icon: 'facebook' },
-  { label: 'Instagram', href: 'https://www.instagram.com/frontierprojects', icon: 'instagram' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/frontierprojects', icon: 'linkedin' }
+  { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61593094692015', icon: 'facebook' },
+  { label: 'Instagram', href: 'https://www.instagram.com/frontier.projects/', icon: 'instagram' },
+  { label: 'TikTok', href: 'https://www.tiktok.com/@frontierprojects', icon: 'tiktok' }
 ]
 
 export const siteCopy = {

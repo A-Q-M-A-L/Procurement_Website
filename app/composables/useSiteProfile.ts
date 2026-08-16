@@ -17,11 +17,11 @@ export const useSiteProfile = () => {
     mapEmbedUrl: config.public.mapEmbedUrl as string,
     socialFacebook: config.public.socialFacebook as string,
     socialInstagram: config.public.socialInstagram as string,
-    socialLinkedin: config.public.socialLinkedin as string,
+    socialTiktok: config.public.socialTiktok as string,
     socialLinks: [
       { label: 'Facebook', href: config.public.socialFacebook as string },
       { label: 'Instagram', href: config.public.socialInstagram as string },
-      { label: 'LinkedIn', href: config.public.socialLinkedin as string }
+      { label: 'TikTok', href: config.public.socialTiktok as string }
     ].filter((link) => Boolean(link.href))
   }
 }

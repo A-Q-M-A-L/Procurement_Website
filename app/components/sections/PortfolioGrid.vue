@@ -39,6 +39,23 @@ const filteredProjects = computed(() => {
   }
   return props.projects.filter((project) => project.category === props.activeCategory)
 })
+
+const currentCategory = computed(() => props.activeCategory || 'All')
+
+const selectCategory = (category: string) => {
+  emit('update:activeCategory', category)
+}
+
+const onFilterKeydown = (event: KeyboardEvent) => {
+  if (!props.showFilters) return
+  if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return
+
+  event.preventDefault()
+  const currentIndex = categories.indexOf(currentCategory.value)
+  const delta = event.key === 'ArrowRight' ? 1 : -1
+  const nextIndex = (currentIndex + delta + categories.length) % categories.length
+  selectCategory(categories[nextIndex])
+}
 </script>
 
 <template>
@@ -53,22 +70,33 @@ const filteredProjects = computed(() => {
         <NuxtLink v-if="showViewAll" to="/portfolio" class="button button--ghost">View Full Portfolio</NuxtLink>
       </SectionIntro>
 
-      <div v-if="showFilters" class="portfolio-filters" role="tablist" aria-label="Portfolio categories">
+      <div
+        v-if="showFilters"
+        class="portfolio-filters"
+        role="tablist"
+        aria-label="Portfolio categories"
+        @keydown="onFilterKeydown"
+      >
         <button
           v-for="category in categories"
           :key="category"
           type="button"
           class="portfolio-filters__chip"
-          :class="{ 'portfolio-filters__chip--active': (activeCategory || 'All') === category }"
+          :class="{ 'portfolio-filters__chip--active': currentCategory === category }"
           role="tab"
-          :aria-selected="(activeCategory || 'All') === category ? 'true' : 'false'"
-          @click="emit('update:activeCategory', category)"
+          :aria-selected="currentCategory === category ? 'true' : 'false'"
+          :tabindex="currentCategory === category ? 0 : -1"
+          @click="selectCategory(category)"
         >
           {{ category }}
         </button>
       </div>
 
-      <div class="portfolio-grid">
+      <p v-if="showFilters && !filteredProjects.length" class="portfolio-empty">
+        No projects in this category yet. Try another filter or view the full list under All.
+      </p>
+
+      <div v-else class="portfolio-grid">
         <article v-for="project in filteredProjects" :key="project.slug" class="project-card card-panel">
           <div class="project-card__visual project-card__visual--photo">
             <img

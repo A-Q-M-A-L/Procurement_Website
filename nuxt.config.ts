@@ -22,9 +22,11 @@ export default defineNuxtConfig({
       mapEmbedUrl:
         process.env.NUXT_PUBLIC_MAP_EMBED_URL ||
         'https://maps.google.com/maps?q=Blue%20Area%2C%20Islamabad%2C%20Pakistan&z=14&output=embed',
-      socialFacebook: process.env.NUXT_PUBLIC_SOCIAL_FACEBOOK || 'https://www.facebook.com/frontierprojects',
-      socialInstagram: process.env.NUXT_PUBLIC_SOCIAL_INSTAGRAM || 'https://www.instagram.com/frontierprojects',
-      socialLinkedin: process.env.NUXT_PUBLIC_SOCIAL_LINKEDIN || 'https://www.linkedin.com/company/frontierprojects'
+      socialFacebook:
+        process.env.NUXT_PUBLIC_SOCIAL_FACEBOOK || 'https://www.facebook.com/profile.php?id=61593094692015',
+      socialInstagram:
+        process.env.NUXT_PUBLIC_SOCIAL_INSTAGRAM || 'https://www.instagram.com/frontier.projects/',
+      socialTiktok: process.env.NUXT_PUBLIC_SOCIAL_TIKTOK || 'https://www.tiktok.com/@frontierprojects'
     }
   },
   nitro: {
@@ -42,6 +44,10 @@ export default defineNuxtConfig({
     }
   },
   app: {
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in'
+    },
     head: {
       htmlAttrs: {
         lang: 'en'

@@ -11,6 +11,7 @@ import ServiceGrid from '../components/sections/ServiceGrid.vue'
 import TestimonialsSection from '../components/sections/TestimonialsSection.vue'
 import TrustStatsBar from '../components/sections/TrustStatsBar.vue'
 import WhyChooseGrid from '../components/sections/WhyChooseGrid.vue'
+import RevealOnScroll from '../components/site/RevealOnScroll.vue'
 import { usePageSeo } from '../composables/usePageSeo'
 import { useSiteProfile } from '../composables/useSiteProfile'
 import { faqItems, industriesServed, processSteps, siteCopy } from '../data/site'
@@ -33,54 +34,73 @@ const featuredProjects = computed(() => portfolioItems.slice(0, 3))
   <div>
     <HomeHero />
     <TrustStatsBar />
-    <AboutSplit />
 
-    <ServiceGrid
-      :title="siteCopy.servicesTitle"
-      :description="siteCopy.servicesDescription"
-      :services="homeServices"
-    />
+    <RevealOnScroll>
+      <AboutSplit />
+    </RevealOnScroll>
 
-    <InfoCardGrid
-      eyebrow="Industries Served"
-      title="Support across residential, commercial, industrial and site operations"
-      description="Frontier Projects is positioned for practical scopes where construction work, procurement follow-up and documentation support need to work together."
-      :items="industriesServed"
-    />
+    <RevealOnScroll>
+      <ServiceGrid
+        :title="siteCopy.servicesTitle"
+        :description="siteCopy.servicesDescription"
+        :services="homeServices"
+      />
+    </RevealOnScroll>
 
-    <WhyChooseGrid
-      :title="siteCopy.whyChooseTitle"
-      :description="siteCopy.whyChooseDescription"
-    />
+    <RevealOnScroll>
+      <InfoCardGrid
+        eyebrow="Industries Served"
+        title="Support across residential, commercial, industrial and site operations"
+        description="Frontier Projects is positioned for practical scopes where construction work, procurement follow-up and documentation support need to work together."
+        :items="industriesServed"
+      />
+    </RevealOnScroll>
 
-    <TestimonialsSection
-      :title="siteCopy.testimonialsTitle"
-      :description="siteCopy.testimonialsDescription"
-    />
+    <RevealOnScroll>
+      <WhyChooseGrid
+        :title="siteCopy.whyChooseTitle"
+        :description="siteCopy.whyChooseDescription"
+      />
+    </RevealOnScroll>
 
-    <ProcessSection
-      title="A simple process that keeps the conversation moving"
-      description="The platform is intentionally straightforward: present the services clearly, capture useful project details and continue the engagement directly."
-      :steps="processSteps"
-    />
+    <RevealOnScroll>
+      <TestimonialsSection
+        :title="siteCopy.testimonialsTitle"
+        :description="siteCopy.testimonialsDescription"
+      />
+    </RevealOnScroll>
 
-    <PortfolioGrid
-      :title="siteCopy.portfolioTitle"
-      :description="siteCopy.portfolioDescription"
-      :projects="featuredProjects"
-      :show-view-all="true"
-      compact
-    />
+    <RevealOnScroll>
+      <ProcessSection
+        title="A simple process that keeps the conversation moving"
+        description="The platform is intentionally straightforward: present the services clearly, capture useful project details and continue the engagement directly."
+        :steps="processSteps"
+      />
+    </RevealOnScroll>
 
-    <FaqSection
-      title="Common questions before getting in touch"
-      description="A few practical answers for clients who want to understand how Frontier Projects handles early inquiries."
-      :items="faqItems.slice(0, 3)"
-    />
+    <RevealOnScroll>
+      <PortfolioGrid
+        :title="siteCopy.portfolioTitle"
+        :description="siteCopy.portfolioDescription"
+        :projects="featuredProjects"
+        :show-view-all="true"
+        compact
+      />
+    </RevealOnScroll>
 
-    <CtaBand
-      title="Ready to discuss a project requirement?"
-      description="Use the quote form to share your scope, location and timeline. Frontier Projects will review it directly and continue the discussion by email, phone or WhatsApp."
-    />
+    <RevealOnScroll>
+      <FaqSection
+        title="Common questions before getting in touch"
+        description="A few practical answers for clients who want to understand how Frontier Projects handles early inquiries."
+        :items="faqItems.slice(0, 3)"
+      />
+    </RevealOnScroll>
+
+    <RevealOnScroll>
+      <CtaBand
+        title="Ready to discuss a project requirement?"
+        description="Use the quote form to share your scope, location and timeline. Frontier Projects will review it directly and continue the discussion by email, phone or WhatsApp."
+      />
+    </RevealOnScroll>
   </div>
 </template>

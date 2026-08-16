@@ -9,6 +9,7 @@ import PageHero from '../components/sections/PageHero.vue'
 import SectionIntro from '../components/sections/SectionIntro.vue'
 import ServiceMap from '../components/sections/ServiceMap.vue'
 import TeamGrid from '../components/sections/TeamGrid.vue'
+import RevealOnScroll from '../components/site/RevealOnScroll.vue'
 import { usePageSeo } from '../composables/usePageSeo'
 import { useSiteProfile } from '../composables/useSiteProfile'
 import { aboutHighlights, officeLocation, serviceAreas, siteCopy } from '../data/site'
@@ -44,48 +45,60 @@ const missionItems = computed(() => [
       :description="siteCopy.aboutDescription"
     />
 
-    <ContentCardGrid :items="missionItems"/>
+    <RevealOnScroll>
+      <ContentCardGrid :items="missionItems" />
+    </RevealOnScroll>
 
-    <TeamGrid :members="teamMembers" />
+    <RevealOnScroll>
+      <TeamGrid :members="teamMembers" />
+    </RevealOnScroll>
 
-    <section class="section-block">
-      <div class="shell">
-        <SectionIntro eyebrow="How we work" title="Practical highlights" />
-        <AboutHighlights :items="aboutHighlights" layout="page" />
-      </div>
-    </section>
+    <RevealOnScroll>
+      <section class="section-block">
+        <div class="shell">
+          <SectionIntro eyebrow="How we work" title="Practical highlights" />
+          <AboutHighlights :items="aboutHighlights" layout="page" />
+        </div>
+      </section>
+    </RevealOnScroll>
 
-    <section class="section-block section-block--muted">
-      <div class="shell">
-        <SectionIntro
-          eyebrow="Credentials"
-          title="Certifications and compliance focus"
-          description="Licenses, HSE practices and quality systems that support dependable project coordination."
-        />
-        <CertificationBadges />
-      </div>
-    </section>
+    <RevealOnScroll>
+      <section class="section-block section-block--muted">
+        <div class="shell">
+          <SectionIntro
+            eyebrow="Credentials"
+            title="Certifications and compliance focus"
+            description="Licenses, HSE practices and quality systems that support dependable project coordination."
+          />
+          <CertificationBadges />
+        </div>
+      </section>
+    </RevealOnScroll>
 
-    <section class="section-block">
-      <div class="shell about-contact-grid">
-        <ServiceMap
-          title="Visit and service coverage"
-          :description="`${officeLocation.addressLine}. Primary coordination across Islamabad and surrounding regions.`"
-        />
-        <ContactCard
-          eyebrow="Service Areas"
-          title="Where we support projects"
-          :list="serviceAreas"
-        >
-          <a :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
-          <a :href="`tel:${phone}`">{{ phone }}</a>
-        </ContactCard>
-      </div>
-    </section>
+    <RevealOnScroll>
+      <section class="section-block">
+        <div class="shell about-contact-grid">
+          <ServiceMap
+            title="Visit and service coverage"
+            :description="`${officeLocation.addressLine}. Primary coordination across Islamabad and surrounding regions.`"
+          />
+          <ContactCard
+            eyebrow="Service Areas"
+            title="Where we support projects"
+            :list="serviceAreas"
+          >
+            <a :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
+            <a :href="`tel:${phone}`">{{ phone }}</a>
+          </ContactCard>
+        </div>
+      </section>
+    </RevealOnScroll>
 
-    <CtaBand
-      title="Want to discuss a project with the team?"
-      description="Share your requirement through the quote form or continue directly by phone, email or WhatsApp."
-    />
+    <RevealOnScroll>
+      <CtaBand
+        title="Want to discuss a project with the team?"
+        description="Share your requirement through the quote form or continue directly by phone, email or WhatsApp."
+      />
+    </RevealOnScroll>
   </div>
 </template>

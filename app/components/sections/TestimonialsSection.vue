@@ -9,6 +9,8 @@ defineProps<{
 }>()
 
 const active = ref(0)
+const isPaused = ref(false)
+const prefersReducedMotion = ref(false)
 let timer: ReturnType<typeof setInterval> | null = null
 
 const stars = (rating: number) => '★'.repeat(rating) + '☆'.repeat(Math.max(0, 5 - rating))
@@ -26,17 +28,47 @@ const visible = computed(() => {
   return [first, second]
 })
 
-onMounted(() => {
+const stopAutoplay = () => {
+  if (timer) {
+    clearInterval(timer)
+    timer = null
+  }
+}
+
+const startAutoplay = () => {
+  stopAutoplay()
+  if (prefersReducedMotion.value || isPaused.value) return
   timer = setInterval(next, 7000)
+}
+
+const pause = () => {
+  isPaused.value = true
+  stopAutoplay()
+}
+
+const resume = () => {
+  isPaused.value = false
+  startAutoplay()
+}
+
+onMounted(() => {
+  prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  startAutoplay()
 })
 
 onBeforeUnmount(() => {
-  if (timer) clearInterval(timer)
+  stopAutoplay()
 })
 </script>
 
 <template>
-  <section class="section-block section-block--muted">
+  <section
+    class="section-block section-block--muted"
+    @mouseenter="pause"
+    @mouseleave="resume"
+    @focusin="pause"
+    @focusout="resume"
+  >
     <div class="shell">
       <SectionIntro
         eyebrow="Client Feedback"
@@ -54,7 +86,7 @@ onBeforeUnmount(() => {
         </div>
       </SectionIntro>
 
-      <div class="testimonials-grid">
+      <div class="testimonials-grid" aria-live="polite">
         <article v-for="item in visible" :key="item.id" class="testimonial-card card-panel">
           <div class="testimonial-card__rating" :aria-label="`${item.rating} out of 5 stars`">
             {{ stars(item.rating) }}

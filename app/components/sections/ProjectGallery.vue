@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { PortfolioImage } from '~/data/portfolio'
 
 const props = defineProps<{
@@ -9,19 +9,31 @@ const props = defineProps<{
 
 const activeIndex = ref<number | null>(null)
 const dialogRef = ref<HTMLDialogElement | null>(null)
+const thumbRefs = ref<HTMLButtonElement[]>([])
+const lastFocusedThumb = ref<HTMLButtonElement | null>(null)
 
 const activeImage = computed(() =>
   activeIndex.value === null ? null : props.images[activeIndex.value] || null
 )
 
-const open = (index: number) => {
+const setThumbRef = (el: Element | null, index: number) => {
+  if (el instanceof HTMLButtonElement) {
+    thumbRefs.value[index] = el
+  }
+}
+
+const open = async (index: number) => {
+  lastFocusedThumb.value = thumbRefs.value[index] || null
   activeIndex.value = index
+  await nextTick()
   dialogRef.value?.showModal()
 }
 
-const close = () => {
+const close = async () => {
   dialogRef.value?.close()
   activeIndex.value = null
+  await nextTick()
+  lastFocusedThumb.value?.focus()
 }
 
 const showNext = () => {
@@ -36,7 +48,10 @@ const showPrev = () => {
 
 const onKeydown = (event: KeyboardEvent) => {
   if (activeIndex.value === null) return
-  if (event.key === 'Escape') close()
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    void close()
+  }
   if (event.key === 'ArrowRight') showNext()
   if (event.key === 'ArrowLeft') showPrev()
 }
@@ -55,6 +70,7 @@ onBeforeUnmount(() => {
     <button
       v-for="(image, index) in images"
       :key="`${image.src}-${index}`"
+      :ref="(el) => setThumbRef(el as Element | null, index)"
       type="button"
       class="project-gallery__thumb"
       :aria-label="`Open image: ${image.alt}`"

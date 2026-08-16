@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { nextTick } from 'vue'
 import { quoteServiceOptions } from '~/data/services'
 import SectionIntro from './SectionIntro.vue'
 
@@ -14,6 +15,8 @@ type QuoteFormState = {
   message: string
   website: string
 }
+
+type FieldName = 'name' | 'email' | 'message'
 
 const { apiUrl, contactEmail, phone } = useSiteProfile()
 
@@ -34,8 +37,13 @@ const form = reactive<QuoteFormState>(createInitialState())
 const isSubmitting = ref(false)
 const submitError = ref('')
 const submitSuccess = ref('')
+const fieldError = ref<FieldName | ''>('')
 const mountedAt = Date.now()
 const statusMessageId = 'quote-form-status'
+const statusRef = ref<HTMLElement | null>(null)
+const nameInputRef = ref<HTMLInputElement | null>(null)
+const emailInputRef = ref<HTMLInputElement | null>(null)
+const messageInputRef = ref<HTMLTextAreaElement | null>(null)
 
 const endpoint = computed(() => {
   const normalizedBase = apiUrl.replace(/\/$/, '')
@@ -44,42 +52,80 @@ const endpoint = computed(() => {
 
 const resetForm = () => {
   Object.assign(form, createInitialState())
+  fieldError.value = ''
 }
 
-const validate = () => {
-  if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-    return 'Please fill in your name, email and project message.'
+const focusStatus = async () => {
+  await nextTick()
+  statusRef.value?.focus()
+  statusRef.value?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+}
+
+const focusField = async (field: FieldName) => {
+  await nextTick()
+  const map = {
+    name: nameInputRef.value,
+    email: emailInputRef.value,
+    message: messageInputRef.value
+  }
+  const el = map[field]
+  el?.focus()
+  el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+}
+
+const validate = (): { message: string; field: FieldName | '' } => {
+  if (!form.name.trim()) {
+    return { message: 'Please enter your name.', field: 'name' }
+  }
+
+  if (!form.email.trim()) {
+    return { message: 'Please enter your email address.', field: 'email' }
   }
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailPattern.test(form.email.trim())) {
-    return 'Please provide a valid email address.'
+    return { message: 'Please provide a valid email address.', field: 'email' }
+  }
+
+  if (!form.message.trim()) {
+    return { message: 'Please describe your project requirement.', field: 'message' }
   }
 
   if (form.message.trim().length < 20) {
-    return 'Please share a little more project detail so the team can respond usefully.'
+    return {
+      message: 'Please share a little more project detail so the team can respond usefully (at least 20 characters).',
+      field: 'message'
+    }
   }
 
   if (Date.now() - mountedAt < 1500) {
-    return 'Please wait a moment and submit again.'
+    return { message: 'Please wait a moment and submit again.', field: '' }
   }
 
-  return ''
+  return { message: '', field: '' }
 }
 
 const submitQuote = async () => {
   submitError.value = ''
   submitSuccess.value = ''
+  fieldError.value = ''
 
   if (form.website.trim()) {
     submitSuccess.value = 'Your request has been received.'
     resetForm()
+    await focusStatus()
     return
   }
 
-  const validationMessage = validate()
-  if (validationMessage) {
-    submitError.value = validationMessage
+  const validation = validate()
+  if (validation.message) {
+    submitError.value = validation.message
+    fieldError.value = validation.field
+    if (validation.field) {
+      await focusField(validation.field)
+    } else {
+      await focusStatus()
+    }
     return
   }
 
@@ -107,6 +153,7 @@ const submitQuote = async () => {
     submitSuccess.value =
       response.message || 'Your quote request has been sent. Frontier Projects will continue the conversation offline.'
     resetForm()
+    await focusStatus()
   } catch (error: unknown) {
     const message =
       error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object' && 'message' in error.data
@@ -114,6 +161,7 @@ const submitQuote = async () => {
         : 'The quote request could not be sent right now. Please try again or contact us directly.'
 
     submitError.value = message
+    await focusStatus()
   } finally {
     isSubmitting.value = false
   }
@@ -129,121 +177,126 @@ const submitQuote = async () => {
       variant="centered"
     />
 
-    <form class="quote-form" @submit.prevent="submitQuote">
-      <div class="quote-form__grid">
-        <label>
-          <span>Name *</span>
-          <input
-            v-model="form.name"
-            type="text"
-            name="name"
-            autocomplete="name"
-            placeholder="Your full name"
+    <form class="quote-form" :aria-busy="isSubmitting ? 'true' : 'false'" @submit.prevent="submitQuote">
+      <fieldset class="quote-form__fieldset" :disabled="isSubmitting">
+        <div class="quote-form__grid">
+          <label>
+            <span>Name *</span>
+            <input
+              ref="nameInputRef"
+              v-model="form.name"
+              type="text"
+              name="name"
+              autocomplete="name"
+              placeholder="Your full name"
+              required
+              :aria-invalid="fieldError === 'name' ? 'true' : 'false'"
+              :aria-describedby="statusMessageId"
+            />
+          </label>
+
+          <label>
+            <span>Email *</span>
+            <input
+              ref="emailInputRef"
+              v-model="form.email"
+              type="email"
+              name="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+              :aria-invalid="fieldError === 'email' ? 'true' : 'false'"
+              :aria-describedby="statusMessageId"
+            />
+          </label>
+
+          <label>
+            <span>Phone</span>
+            <input
+              v-model="form.phone"
+              type="tel"
+              name="phone"
+              autocomplete="tel"
+              inputmode="tel"
+              placeholder="+92..."
+              :aria-describedby="statusMessageId"
+            />
+          </label>
+
+          <label>
+            <span>Company</span>
+            <input
+              v-model="form.company"
+              type="text"
+              name="company"
+              autocomplete="organization"
+              placeholder="Company name"
+              :aria-describedby="statusMessageId"
+            />
+          </label>
+
+          <label>
+            <span>Service</span>
+            <select v-model="form.service" name="service" :aria-describedby="statusMessageId">
+              <option v-for="service in quoteServiceOptions" :key="service" :value="service">
+                {{ service }}
+              </option>
+            </select>
+          </label>
+
+          <label>
+            <span>Project Location</span>
+            <input
+              v-model="form.projectLocation"
+              type="text"
+              name="projectLocation"
+              placeholder="City or site location"
+              :aria-describedby="statusMessageId"
+            />
+          </label>
+
+          <label>
+            <span>Budget</span>
+            <input
+              v-model="form.budget"
+              type="text"
+              name="budget"
+              placeholder="Optional project budget"
+              :aria-describedby="statusMessageId"
+            />
+          </label>
+
+          <label>
+            <span>Timeline</span>
+            <input
+              v-model="form.timeline"
+              type="text"
+              name="timeline"
+              placeholder="Target start or deadline"
+              :aria-describedby="statusMessageId"
+            />
+          </label>
+        </div>
+
+        <label class="quote-form__message">
+          <span>Message *</span>
+          <textarea
+            ref="messageInputRef"
+            v-model="form.message"
+            name="message"
+            rows="6"
+            placeholder="Describe the project type, scope, materials, procurement needs or support you require."
             required
-            :aria-invalid="submitError && !form.name.trim() ? 'true' : 'false'"
+            :aria-invalid="fieldError === 'message' ? 'true' : 'false'"
             :aria-describedby="statusMessageId"
-          />
+          ></textarea>
         </label>
 
-        <label>
-          <span>Email *</span>
-          <input
-            v-model="form.email"
-            type="email"
-            name="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-            :aria-invalid="submitError && !form.email.trim() ? 'true' : 'false'"
-            :aria-describedby="statusMessageId"
-          />
+        <label class="quote-form__honeypot" aria-hidden="true">
+          <span>Website</span>
+          <input v-model="form.website" type="text" tabindex="-1" autocomplete="off" />
         </label>
-
-        <label>
-          <span>Phone</span>
-          <input
-            v-model="form.phone"
-            type="tel"
-            name="phone"
-            autocomplete="tel"
-            inputmode="tel"
-            placeholder="+92..."
-            :aria-describedby="statusMessageId"
-          />
-        </label>
-
-        <label>
-          <span>Company</span>
-          <input
-            v-model="form.company"
-            type="text"
-            name="company"
-            autocomplete="organization"
-            placeholder="Company name"
-            :aria-describedby="statusMessageId"
-          />
-        </label>
-
-        <label>
-          <span>Service</span>
-          <select v-model="form.service" name="service" :aria-describedby="statusMessageId">
-            <option v-for="service in quoteServiceOptions" :key="service" :value="service">
-              {{ service }}
-            </option>
-          </select>
-        </label>
-
-        <label>
-          <span>Project Location</span>
-          <input
-            v-model="form.projectLocation"
-            type="text"
-            name="projectLocation"
-            placeholder="City or site location"
-            :aria-describedby="statusMessageId"
-          />
-        </label>
-
-        <label>
-          <span>Budget</span>
-          <input
-            v-model="form.budget"
-            type="text"
-            name="budget"
-            placeholder="Optional project budget"
-            :aria-describedby="statusMessageId"
-          />
-        </label>
-
-        <label>
-          <span>Timeline</span>
-          <input
-            v-model="form.timeline"
-            type="text"
-            name="timeline"
-            placeholder="Target start or deadline"
-            :aria-describedby="statusMessageId"
-          />
-        </label>
-      </div>
-
-      <label class="quote-form__message">
-        <span>Message *</span>
-        <textarea
-          v-model="form.message"
-          name="message"
-          rows="6"
-          placeholder="Describe the project type, scope, materials, procurement needs or support you require."
-          required
-          :aria-invalid="submitError && !form.message.trim() ? 'true' : 'false'"
-          :aria-describedby="statusMessageId"
-        ></textarea>
-      </label>
-
-      <label class="quote-form__honeypot" aria-hidden="true">
-        <span>Website</span>
-        <input v-model="form.website" type="text" tabindex="-1" autocomplete="off" />
-      </label>
+      </fieldset>
 
       <div class="quote-form__footer">
         <div class="quote-form__contact">
@@ -258,7 +311,14 @@ const submitQuote = async () => {
         </button>
       </div>
 
-      <div :id="statusMessageId" class="form-status" aria-live="polite" aria-atomic="true">
+      <div
+        :id="statusMessageId"
+        ref="statusRef"
+        class="form-status"
+        tabindex="-1"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         <p v-if="submitError" class="form-message form-message--error" role="alert">{{ submitError }}</p>
         <p v-if="submitSuccess" class="form-message form-message--success" role="status">{{ submitSuccess }}</p>
       </div>
