@@ -15,12 +15,30 @@ export default defineNuxtConfig({
       companyName: process.env.NUXT_PUBLIC_COMPANY_NAME || 'Frontier Projects',
       contactEmail: process.env.NUXT_PUBLIC_CONTACT_EMAIL || 'contact@frontierprojects.net',
       phone: process.env.NUXT_PUBLIC_PHONE || '+923359571564',
-      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001'
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001',
+      whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '923055443110',
+      whatsappMessage: process.env.NUXT_PUBLIC_WHATSAPP_MESSAGE || "Hi, I'd like a quote for...",
+      officeAddress: process.env.NUXT_PUBLIC_OFFICE_ADDRESS || 'Blue Area, Islamabad, Pakistan',
+      mapEmbedUrl:
+        process.env.NUXT_PUBLIC_MAP_EMBED_URL ||
+        'https://maps.google.com/maps?q=Blue%20Area%2C%20Islamabad%2C%20Pakistan&z=14&output=embed',
+      socialFacebook: process.env.NUXT_PUBLIC_SOCIAL_FACEBOOK || 'https://www.facebook.com/frontierprojects',
+      socialInstagram: process.env.NUXT_PUBLIC_SOCIAL_INSTAGRAM || 'https://www.instagram.com/frontierprojects',
+      socialLinkedin: process.env.NUXT_PUBLIC_SOCIAL_LINKEDIN || 'https://www.linkedin.com/company/frontierprojects'
     }
   },
   nitro: {
     prerender: {
-      routes: ['/sitemap.xml']
+      routes: [
+        '/sitemap.xml',
+        '/about',
+        '/resources',
+        '/privacy-policy',
+        '/terms',
+        '/resources/procurement-checklist-for-house-builds',
+        '/resources/why-hse-docs-matter-early',
+        '/resources/modular-site-offices-quick-setup'
+      ]
     }
   },
   app: {

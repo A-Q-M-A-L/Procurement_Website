@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SectionIntro from './SectionIntro.vue'
+
 defineProps<{
   title: string
   description: string
@@ -12,11 +14,7 @@ defineProps<{
 <template>
   <section class="section-block section-block--muted">
     <div class="shell">
-      <div class="section-intro">
-        <p class="eyebrow">How We Work</p>
-        <h2>{{ title }}</h2>
-        <p>{{ description }}</p>
-      </div>
+      <SectionIntro eyebrow="How We Work" :title="title" :description="description" />
 
       <div class="process-grid">
         <article

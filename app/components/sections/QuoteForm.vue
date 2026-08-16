@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { quoteServiceOptions } from '~/data/services'
+import SectionIntro from './SectionIntro.vue'
 
 type QuoteFormState = {
   name: string
@@ -121,11 +122,12 @@ const submitQuote = async () => {
 
 <template>
   <section class="quote-form-shell card-panel">
-    <div class="section-intro section-intro--centered">
-      <p class="eyebrow">Get a Quote</p>
-      <h2>Send your project requirement</h2>
-      <p>Share the scope and preferred timeline. The team will receive it by email and respond directly.</p>
-    </div>
+    <SectionIntro
+      eyebrow="Get a Quote"
+      title="Send your project requirement"
+      description="Share the scope and preferred timeline. The team will receive it by email and respond directly."
+      variant="centered"
+    />
 
     <form class="quote-form" @submit.prevent="submitQuote">
       <div class="quote-form__grid">

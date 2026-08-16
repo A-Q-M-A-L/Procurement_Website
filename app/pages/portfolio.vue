@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import CtaBand from '../components/sections/CtaBand.vue'
 import PageHero from '../components/sections/PageHero.vue'
 import PortfolioGrid from '../components/sections/PortfolioGrid.vue'
@@ -7,10 +8,12 @@ import { useSiteProfile } from '../composables/useSiteProfile'
 import { portfolioItems } from '../data/portfolio'
 
 const { companyName } = useSiteProfile()
+const activeCategory = ref('All')
 
 usePageSeo({
   title: `Portfolio | ${companyName}`,
-  description: 'Representative Frontier Projects project types across residential, commercial, modular and procurement-led scopes.',
+  description:
+    'Representative Frontier Projects photo gallery across residential, commercial, industrial and modular scopes.',
   path: '/portfolio'
 })
 </script>
@@ -19,14 +22,16 @@ usePageSeo({
   <div>
     <PageHero
       eyebrow="Portfolio"
-      title="Representative project types and delivery support"
-      description="A portfolio-style overview of the kinds of residential, commercial, modular and procurement-led requirements Frontier Projects can coordinate."
+      title="Project gallery with delivery support examples"
+      description="Browse representative project types across residential, commercial, industrial and modular scopes, with site and delivery photography from the gallery."
     />
 
     <PortfolioGrid
-      title="Representative project selection"
-      description="These entries are designed to show the type of scope Frontier Projects can support, from construction coordination to procurement and modular site requirements."
+      title="Project photo gallery"
+      description="Filter by category and open images in the lightbox. Renovation-style entries include a before/after comparison slider."
       :projects="portfolioItems"
+      show-filters
+      v-model:active-category="activeCategory"
     />
 
     <CtaBand

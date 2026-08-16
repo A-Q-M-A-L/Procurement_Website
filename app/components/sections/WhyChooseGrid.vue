@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SectionIntro from './SectionIntro.vue'
 import { whyChooseUs } from '~/data/site'
 
 defineProps<{
@@ -10,11 +11,7 @@ defineProps<{
 <template>
   <section class="section-block section-block--muted">
     <div class="shell why-choose">
-      <div class="section-intro">
-        <p class="eyebrow">Why Choose Us</p>
-        <h2>{{ title }}</h2>
-        <p>{{ description }}</p>
-      </div>
+      <SectionIntro eyebrow="Why Choose Us" :title="title" :description="description" />
 
       <div class="why-choose__layout">
         <div class="why-choose__visual card-panel">

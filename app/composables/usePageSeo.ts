@@ -1,4 +1,4 @@
-import { serviceAreas } from '~/data/site'
+import { officeLocation, serviceAreas } from '~/data/site'
 
 type UsePageSeoOptions = {
   title: string
@@ -7,10 +7,18 @@ type UsePageSeoOptions = {
 }
 
 export const usePageSeo = ({ title, description, path }: UsePageSeoOptions) => {
-  const { companyName, contactEmail, phone, siteUrl } = useSiteProfile()
+  const {
+    companyName,
+    contactEmail,
+    phone,
+    siteUrl,
+    socialLinks,
+    officeAddress
+  } = useSiteProfile()
   const baseUrl = siteUrl || 'https://frontierprojects.net'
   const canonicalUrl = new URL(path, baseUrl).toString()
   const ogImage = new URL('/og-frontier.svg', baseUrl).toString()
+  const sameAs = socialLinks.map((link) => link.href)
 
   useSeoMeta({
     title,
@@ -41,7 +49,9 @@ export const usePageSeo = ({ title, description, path }: UsePageSeoOptions) => {
               name: companyName,
               url: baseUrl,
               email: contactEmail,
-              telephone: phone
+              telephone: phone,
+              logo: new URL('/logo.png', baseUrl).toString(),
+              sameAs
             },
             {
               '@type': 'LocalBusiness',
@@ -50,7 +60,31 @@ export const usePageSeo = ({ title, description, path }: UsePageSeoOptions) => {
               email: contactEmail,
               telephone: phone,
               description,
-              areaServed: serviceAreas
+              image: ogImage,
+              priceRange: '$$',
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: officeAddress || officeLocation.addressLine,
+                addressLocality: officeLocation.city,
+                addressRegion: officeLocation.region,
+                postalCode: officeLocation.postalCode,
+                addressCountry: officeLocation.country
+              },
+              geo: {
+                '@type': 'GeoCoordinates',
+                latitude: officeLocation.latitude,
+                longitude: officeLocation.longitude
+              },
+              openingHoursSpecification: [
+                {
+                  '@type': 'OpeningHoursSpecification',
+                  dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                  opens: '09:00',
+                  closes: '18:00'
+                }
+              ],
+              areaServed: serviceAreas,
+              sameAs
             },
             {
               '@type': 'WebSite',

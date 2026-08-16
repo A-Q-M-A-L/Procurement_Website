@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import BeforeAfterSlider from './BeforeAfterSlider.vue'
+import ProjectGallery from './ProjectGallery.vue'
+import SectionIntro from './SectionIntro.vue'
 import type { PortfolioItem } from '~/data/portfolio'
 
 const props = defineProps<{
@@ -6,47 +10,75 @@ const props = defineProps<{
   description: string
   projects: PortfolioItem[]
   showViewAll?: boolean
+  showFilters?: boolean
+  activeCategory?: string
+  compact?: boolean
 }>()
 
-const visualStyle = (category: string) => {
-  const styles: Record<string, string> = {
-    Residential: 'linear-gradient(135deg, rgba(217, 119, 6, 0.16), rgba(17, 24, 39, 0.95))',
-    Commercial: 'linear-gradient(135deg, rgba(15, 118, 110, 0.2), rgba(17, 24, 39, 0.95))',
-    Modular: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(17, 24, 39, 0.95))',
-    Procurement: 'linear-gradient(135deg, rgba(168, 85, 247, 0.18), rgba(17, 24, 39, 0.95))'
-  }
+const emit = defineEmits<{
+  'update:activeCategory': [value: string]
+}>()
 
-  return {
-    background: styles[category] || 'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(17, 24, 39, 0.95))'
-  }
+const categories = ['All', 'Residential', 'Commercial', 'Industrial', 'Modular']
+
+const coverImage = (project: PortfolioItem) =>
+  project.images.find((image) => image.kind === 'after') ||
+  project.images.find((image) => image.kind === 'gallery') ||
+  project.images[0]
+
+const beforeAfterPair = (project: PortfolioItem) => {
+  const before = project.images.find((image) => image.kind === 'before')
+  const after = project.images.find((image) => image.kind === 'after')
+  if (!before || !after) return null
+  return { before, after }
 }
 
-const initials = (title: string) =>
-  title
-    .split(' ')
-    .slice(0, 2)
-    .map((part) => part.charAt(0))
-    .join('')
-    .toUpperCase()
+const filteredProjects = computed(() => {
+  if (!props.showFilters || !props.activeCategory || props.activeCategory === 'All') {
+    return props.projects
+  }
+  return props.projects.filter((project) => project.category === props.activeCategory)
+})
 </script>
 
 <template>
   <section class="section-block">
     <div class="shell">
-      <div class="section-intro section-intro--with-action">
-        <div>
-          <p class="eyebrow">Portfolio</p>
-          <h2>{{ title }}</h2>
-          <p>{{ description }}</p>
-        </div>
+      <SectionIntro
+        eyebrow="Portfolio"
+        :title="title"
+        :description="description"
+        variant="with-action"
+      >
         <NuxtLink v-if="showViewAll" to="/portfolio" class="button button--ghost">View Full Portfolio</NuxtLink>
+      </SectionIntro>
+
+      <div v-if="showFilters" class="portfolio-filters" role="tablist" aria-label="Portfolio categories">
+        <button
+          v-for="category in categories"
+          :key="category"
+          type="button"
+          class="portfolio-filters__chip"
+          :class="{ 'portfolio-filters__chip--active': (activeCategory || 'All') === category }"
+          role="tab"
+          :aria-selected="(activeCategory || 'All') === category ? 'true' : 'false'"
+          @click="emit('update:activeCategory', category)"
+        >
+          {{ category }}
+        </button>
       </div>
 
       <div class="portfolio-grid">
-        <article v-for="project in projects" :key="project.slug" class="project-card card-panel">
-          <div class="project-card__visual" :style="visualStyle(project.category)">
+        <article v-for="project in filteredProjects" :key="project.slug" class="project-card card-panel">
+          <div class="project-card__visual project-card__visual--photo">
+            <img
+              v-if="coverImage(project)"
+              :src="coverImage(project)!.src"
+              :alt="coverImage(project)!.alt"
+              loading="lazy"
+              decoding="async"
+            />
             <span class="project-card__badge">{{ project.category }}</span>
-            <span class="project-card__initials">{{ initials(project.title) }}</span>
           </div>
 
           <div class="project-card__body">
@@ -60,6 +92,18 @@ const initials = (title: string) =>
               <strong>Typical outcome</strong>
               <p>{{ project.outcome }}</p>
             </div>
+
+            <BeforeAfterSlider
+              v-if="!compact && project.showBeforeAfter && beforeAfterPair(project)"
+              :before="beforeAfterPair(project)!.before"
+              :after="beforeAfterPair(project)!.after"
+            />
+
+            <ProjectGallery
+              v-if="project.images.length"
+              :images="compact ? project.images.slice(0, 3) : project.images"
+              :title="project.title"
+            />
           </div>
         </article>
       </div>

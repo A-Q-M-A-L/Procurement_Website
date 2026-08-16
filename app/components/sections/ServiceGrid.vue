@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SectionIntro from './SectionIntro.vue'
 import type { ServiceCategory } from '~/data/services'
 
 defineProps<{
@@ -11,11 +12,7 @@ defineProps<{
 <template>
   <section class="section-block">
     <div class="shell">
-      <div class="section-intro">
-        <p class="eyebrow">Services</p>
-        <h2>{{ title }}</h2>
-        <p>{{ description }}</p>
-      </div>
+      <SectionIntro eyebrow="Services" :title="title" :description="description" />
 
       <div class="service-grid">
         <article v-for="(service, index) in services" :key="service.slug" class="service-card card-panel">

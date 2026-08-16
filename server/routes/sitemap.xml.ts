@@ -1,18 +1,25 @@
-const routes = ['/', '/portfolio', '/our-services', '/get-a-quote']
+import { resourceArticles } from '~/data/resources'
+
+const staticRoutes = [
+  '/',
+  '/about',
+  '/portfolio',
+  '/our-services',
+  '/resources',
+  '/get-a-quote',
+  '/privacy-policy',
+  '/terms',
+  ...resourceArticles.map((article) => `/resources/${article.slug}`)
+]
 
 export default defineEventHandler((event) => {
   const baseUrl = process.env.NUXT_PUBLIC_SITE_URL || 'https://frontierprojects.net'
   const now = new Date().toISOString()
 
-  const entries = routes
+  const entries = staticRoutes
     .map((route) => {
       const url = new URL(route, baseUrl).toString()
-      return [
-        '<url>',
-        `<loc>${url}</loc>`,
-        `<lastmod>${now}</lastmod>`,
-        '</url>'
-      ].join('')
+      return ['<url>', `<loc>${url}</loc>`, `<lastmod>${now}</lastmod>`, '</url>'].join('')
     })
     .join('')
 

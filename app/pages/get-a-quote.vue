@@ -1,18 +1,26 @@
 <script setup lang="ts">
-import FaqSection from '../components/sections/FaqSection.vue'
-import PageHero from '../components/sections/PageHero.vue'
-import QuoteForm from '../components/sections/QuoteForm.vue'
-import { usePageSeo } from '../composables/usePageSeo'
-import { useSiteProfile } from '../composables/useSiteProfile'
-import { faqItems, quoteHighlights, serviceAreas, siteCopy } from '../data/site'
+import ContactCard from "../components/sections/ContactCard.vue";
+import FaqSection from "../components/sections/FaqSection.vue";
+import PageHero from "../components/sections/PageHero.vue";
+import QuoteForm from "../components/sections/QuoteForm.vue";
+import ServiceMap from "../components/sections/ServiceMap.vue";
+import { usePageSeo } from "../composables/usePageSeo";
+import { useSiteProfile } from "../composables/useSiteProfile";
+import {
+  faqItems,
+  quoteHighlights,
+  serviceAreas,
+  siteCopy,
+} from "../data/site";
 
-const { companyName, contactEmail, phone } = useSiteProfile()
+const { companyName, contactEmail, phone, whatsappUrl } = useSiteProfile();
 
 usePageSeo({
   title: `Get a Quote | ${companyName}`,
-  description: 'Send your Frontier Projects requirement through the quote form and continue the discussion offline.',
-  path: '/get-a-quote'
-})
+  description:
+    "Send your Frontier Projects requirement through the quote form and continue the discussion offline.",
+  path: "/get-a-quote",
+});
 </script>
 
 <template>
@@ -28,32 +36,34 @@ usePageSeo({
         <QuoteForm />
 
         <aside class="quote-page__sidebar">
-          <article
+          <ContactCard
             v-for="item in quoteHighlights"
             :key="item.title"
-            class="card-panel contact-card"
-          >
-            <p class="eyebrow">Inquiry Support</p>
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
-          </article>
+            eyebrow="Inquiry Support"
+            :title="item.title"
+            :description="item.description"
+          />
 
-          <article class="card-panel contact-card">
-            <p class="eyebrow">Direct Contact</p>
-            <h3>Email and phone</h3>
-            <p>Use direct contact if you already have drawings, BOQs, vendor lists or supporting scope notes to discuss.</p>
+          <ContactCard
+            eyebrow="Direct Contact"
+            title="Email, phone and WhatsApp"
+            description="Use direct contact if you already have drawings, BOQs, vendor lists or supporting scope notes to discuss."
+          >
             <a :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
             <a :href="`tel:${phone}`">{{ phone }}</a>
-          </article>
-
-          <article class="card-panel contact-card">
-            <p class="eyebrow">Coverage</p>
-            <h3>Representative service areas</h3>
-            <ul class="contact-card__list">
-              <li v-for="area in serviceAreas" :key="area">{{ area }}</li>
-            </ul>
-          </article>
+            <a :href="whatsappUrl" target="_blank" rel="noopener noreferrer"
+              >Chat on WhatsApp</a
+            >
+          </ContactCard>
         </aside>
+
+        <ServiceMap />
+
+        <ContactCard
+          eyebrow="Coverage"
+          title="Service areas"
+          :list="serviceAreas"
+        />
       </div>
     </section>
 

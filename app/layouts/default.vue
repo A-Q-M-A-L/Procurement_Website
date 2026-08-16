@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SiteFooter from '../components/site/SiteFooter.vue'
 import SiteHeader from '../components/site/SiteHeader.vue'
+import WhatsAppFab from '../components/site/WhatsAppFab.vue'
 </script>
 
 <template>
@@ -11,5 +12,6 @@ import SiteHeader from '../components/site/SiteHeader.vue'
       <slot />
     </main>
     <SiteFooter />
+    <WhatsAppFab />
   </div>
 </template>

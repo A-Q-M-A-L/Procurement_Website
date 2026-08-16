@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SectionIntro from './SectionIntro.vue'
+
 defineProps<{
   eyebrow?: string
   title: string
@@ -13,11 +15,7 @@ defineProps<{
 <template>
   <section class="section-block">
     <div class="shell">
-      <div class="section-intro">
-        <p v-if="eyebrow" class="eyebrow">{{ eyebrow }}</p>
-        <h2>{{ title }}</h2>
-        <p>{{ description }}</p>
-      </div>
+      <SectionIntro :eyebrow="eyebrow" :title="title" :description="description" />
 
       <div class="info-grid">
         <article v-for="item in items" :key="item.title" class="info-card card-panel">

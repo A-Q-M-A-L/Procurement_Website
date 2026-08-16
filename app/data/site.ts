@@ -1,8 +1,21 @@
 export const navLinks = [
   { label: 'Home', to: '/' },
+  { label: 'About', to: '/about' },
   { label: 'Portfolio', to: '/portfolio' },
   { label: 'Our Services', to: '/our-services' },
+  { label: 'Resources', to: '/resources' },
   { label: 'Get a Quote', to: '/get-a-quote' }
+]
+
+export const legalLinks = [
+  { label: 'Privacy Policy', to: '/privacy-policy' },
+  { label: 'Terms of Use', to: '/terms' }
+]
+
+export const socialLinks = [
+  { label: 'Facebook', href: 'https://www.facebook.com/frontierprojects', icon: 'facebook' },
+  { label: 'Instagram', href: 'https://www.instagram.com/frontierprojects', icon: 'instagram' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/frontierprojects', icon: 'linkedin' }
 ]
 
 export const siteCopy = {
@@ -14,6 +27,15 @@ export const siteCopy = {
   aboutTitle: 'Built for practical project delivery',
   aboutDescription:
     'Frontier Projects helps clients move from early scope planning to procurement and execution support through one clear service platform. This website works as a service brief and portfolio: review the offering, send your requirement, and continue directly with our team by phone or email.',
+  aboutMissionTitle: 'Our mission',
+  aboutMission:
+    'Deliver practical construction and procurement support with clear communication, dependable coordination and a safety-aware approach that keeps projects moving.',
+  aboutHistoryTitle: 'Company background',
+  aboutHistory:
+    'Frontier Projects grew from hands-on project coordination work across residential, commercial and site-support scopes. The team focuses on connecting execution needs with procurement follow-up so clients are not left managing fragmented vendors and unclear timelines.',
+  testimonialsTitle: 'What clients say about working with us',
+  testimonialsDescription:
+    'Representative feedback reflecting the communication style and coordination approach clients expect from Frontier Projects.',
   servicesTitle: 'Core services for construction and procurement requirements',
   servicesDescription:
     'From building works and material sourcing to HSE documentation, modular site facilities and engineering support, the service mix is structured for clients who want straightforward coordination and responsive follow-through.',
@@ -125,8 +147,21 @@ export const serviceAreas = [
   'Islamabad',
   'Rawalpindi',
   'Lahore',
+  'Karachi (procurement support)',
+  'Peshawar (project coordination)',
   'Regional procurement support across Pakistan'
 ]
+
+export const officeLocation = {
+  label: 'Frontier Projects Office',
+  addressLine: 'Blue Area, Islamabad, Pakistan',
+  city: 'Islamabad',
+  region: 'Islamabad Capital Territory',
+  postalCode: '44000',
+  country: 'PK',
+  latitude: 33.7294,
+  longitude: 73.0931
+}
 
 export const faqItems = [
   {
