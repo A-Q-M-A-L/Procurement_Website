@@ -1,0 +1,46 @@
+services:
+  email:
+    build:
+      context: ./Email_Express_Server
+      dockerfile: Dockerfile
+    env_file:
+      - ./Email_Express_Server/.env
+    environment:
+      TRUST_PROXY: "true"
+      PORT: "3001"
+    expose:
+      - "3001"
+    restart: unless-stopped
+    networks:
+      - frontier
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL:-https://frontierprojects.net}
+        NUXT_PUBLIC_COMPANY_NAME: ${NUXT_PUBLIC_COMPANY_NAME:-Frontier Projects}
+        NUXT_PUBLIC_CONTACT_EMAIL: ${NUXT_PUBLIC_CONTACT_EMAIL:-contact@frontierprojects.net}
+        NUXT_PUBLIC_PHONE: ${NUXT_PUBLIC_PHONE:-+923359571564}
+        # Always same-origin /quote through nginx (ignore local npm-dev API URL)
+        NUXT_PUBLIC_API_URL: ""
+        NUXT_PUBLIC_WHATSAPP_NUMBER: ${NUXT_PUBLIC_WHATSAPP_NUMBER:-923055443110}
+        NUXT_PUBLIC_WHATSAPP_MESSAGE: ${NUXT_PUBLIC_WHATSAPP_MESSAGE:-Hi, I'd like a quote for...}
+        NUXT_PUBLIC_OFFICE_ADDRESS: ${NUXT_PUBLIC_OFFICE_ADDRESS:-Blue Area, Islamabad, Pakistan}
+        NUXT_PUBLIC_MAP_EMBED_URL: ${NUXT_PUBLIC_MAP_EMBED_URL:-https://maps.google.com/maps?q=Blue%20Area%2C%20Islamabad%2C%20Pakistan&z=14&output=embed}
+        NUXT_PUBLIC_SOCIAL_FACEBOOK: ${NUXT_PUBLIC_SOCIAL_FACEBOOK:-https://www.facebook.com/profile.php?id=61593094692015}
+        NUXT_PUBLIC_SOCIAL_INSTAGRAM: ${NUXT_PUBLIC_SOCIAL_INSTAGRAM:-https://www.instagram.com/frontier.projects/}
+        NUXT_PUBLIC_SOCIAL_TIKTOK: ${NUXT_PUBLIC_SOCIAL_TIKTOK:-https://www.tiktok.com/@frontierprojects}
+    ports:
+      - "8080:80"
+    depends_on:
+      email:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - frontier
+
+networks:
+  frontier:
+    driver: bridge

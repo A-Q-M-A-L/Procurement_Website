@@ -1,0 +1,30 @@
+# Dependencies and build outputs
+node_modules
+**/node_modules
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+
+# Git and IDE
+.git
+.gitattributes
+.fleet
+.idea
+.vscode
+
+# Env and secrets (passed at runtime / build-args, never copied)
+.env
+.env.*
+!**/.env.example
+
+# Logs and misc
+logs
+*.log
+.DS_Store
+npm-debug.log*
+
+# Not needed in the Nuxt/nginx image build context
+Email_Express_Server

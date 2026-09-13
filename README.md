@@ -100,18 +100,47 @@ Useful verification checks:
 7. Submit invalid data and confirm the frontend shows validation errors cleanly.
 8. Confirm the quote server logs requests and that rate limiting works after repeated submissions.
 
+## Docker (recommended)
+
+Nginx serves the static Nuxt build and reverse-proxies `/quote`, `/health`, and `/ready` to the email API on the same origin.
+
+```bash
+cp .env.example .env
+cp Email_Express_Server/.env.example Email_Express_Server/.env
+# Fill real SMTP settings in Email_Express_Server/.env
+# Ensure ALLOWED_ORIGINS includes http://localhost:8080 (and your public HTTPS origin)
+# For Docker builds, set NUXT_PUBLIC_API_URL= (empty) in .env so the form posts to /quote
+
+docker compose up --build
+```
+
+- Site: `http://localhost:8080`
+- Health via nginx: `curl http://localhost:8080/health`
+- Ready via nginx: `curl http://localhost:8080/ready` (needs valid SMTP)
+
+Compose services:
+
+- `web` — multi-stage Nuxt `generate` + nginx (port `8080:80`)
+- `email` — Express quote SMTP API (internal only; `TRUST_PROXY=true`)
+
+SMTP credentials stay in `Email_Express_Server/.env` only (never baked into the web image).
+
 ## Deployment Notes
 
-Recommended setup:
+Recommended setup (matches Docker compose):
+
+1. Run `docker compose up --build` (or deploy the same two images behind TLS).
+2. Leave `NUXT_PUBLIC_API_URL` empty so the quote form posts to same-origin `/quote`.
+3. Put TLS termination on the host/LB in front of port 8080 (or map 443→web).
+4. Keep SMTP credentials only in the email service env, never in the frontend.
+5. Compose sets `TRUST_PROXY=true` for correct client IPs behind nginx.
+
+Manual (non-Docker) alternative:
 
 1. Deploy the Nuxt site as a static build from `.output/public`.
 2. Deploy `Email_Express_Server` as a small Node service.
-3. Point `NUXT_PUBLIC_API_URL` to that deployed API server.
-4. Prefer a same-domain reverse proxy in production if possible, for example:
-   - frontend on `https://frontierprojects.net`
-   - API proxied from `/quote` or hosted at `https://api.frontierprojects.net`
-5. Keep SMTP credentials only in the server env file, never in the frontend.
-6. Set `TRUST_PROXY=true` if the API runs behind a reverse proxy or load balancer.
+3. Point `NUXT_PUBLIC_API_URL` at that API, or proxy `/quote` on the same domain and leave it empty.
+4. Set `TRUST_PROXY=true` if the API runs behind a reverse proxy or load balancer.
 
 ## SMTP Verification Checklist
 

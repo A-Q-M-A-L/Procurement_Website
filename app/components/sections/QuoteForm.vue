@@ -46,8 +46,8 @@ const emailInputRef = ref<HTMLInputElement | null>(null)
 const messageInputRef = ref<HTMLTextAreaElement | null>(null)
 
 const endpoint = computed(() => {
-  const normalizedBase = apiUrl.replace(/\/$/, '')
-  return `${normalizedBase}/quote`
+  const normalizedBase = (apiUrl || '').trim().replace(/\/$/, '')
+  return normalizedBase ? `${normalizedBase}/quote` : '/quote'
 })
 
 const resetForm = () => {

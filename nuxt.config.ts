@@ -15,7 +15,8 @@ export default defineNuxtConfig({
       companyName: process.env.NUXT_PUBLIC_COMPANY_NAME || 'Frontier Projects',
       contactEmail: process.env.NUXT_PUBLIC_CONTACT_EMAIL || 'contact@frontierprojects.net',
       phone: process.env.NUXT_PUBLIC_PHONE || '+923359571564',
-      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001',
+      // Empty string = same-origin /quote (Docker nginx). Use ?? so "" is kept.
+      apiUrl: process.env.NUXT_PUBLIC_API_URL ?? 'http://localhost:3001',
       whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '923055443110',
       whatsappMessage: process.env.NUXT_PUBLIC_WHATSAPP_MESSAGE || "Hi, I'd like a quote for...",
       officeAddress: process.env.NUXT_PUBLIC_OFFICE_ADDRESS || 'Blue Area, Islamabad, Pakistan',
